@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы - КрутоРоллы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3e6d4;
+            color: #333;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background-image: url('https://avatars.mds.yandex.net/get-altay/5517178/2a0000018104a6910485b0ee2463016212bc/XXL_height');
+            background-size: cover;
+            color: #fff;
+            border-radius: 0 0 20px 20px;
+            background-position: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 4em;
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+        header h2 {
+            font-size: 20px;
+            font-weight: 300;
+            margin: 5px 0 0;
+        }
+        .welcome {
+            text-align: center;
+            margin: 20px;
+        }
+        .welcome p {
+            font-size: 1em;
+            color: #333;
+            display: inline-block;
+        }
+        .clear-icon {
+            font-weight: bold;
+            cursor: pointer;
+            color: #333;
+            margin-left: 5px;
+        }
+        .review-form, .reviews {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .review-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .review-form input, .review-form textarea, .review-form button {
+            width: calc(100% - 20px);
+            margin: 10px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            display: block;
+            font-size: 1em;
+        }
+        .review-form button {
+            background-color: #c8553d;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .review-form button:hover {
+            background-color: #a7442d;
+        }
+        .reviews h3 {
+            margin-bottom: 10px;
+        }
+        .review {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        .review img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .review p {
+            margin: 0;
+        }
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .star {
+            font-size: 2em;
+            cursor: pointer;
+            color: #fff;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+        .star.filled {
+            color: #ffc107;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+        .modal-content .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #333;
+        }
+        .modal-content input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Анимация снега */
+        .snowflake {
+            color: #fff;
+            font-size: 1.2em;
+            position: absolute;
+            top: -10%;
+            animation: fall 10s linear infinite;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px);
+            }
+            100% {
+                transform: translateY(110vh);
+            }
+        }
+        /* Анимация поцелуя и сердечек */
+        .kiss {
+            font-size: 50px;
+            position: absolute;
+            animation: fade 2s linear forwards;
+        }
+        .heart {
+            font-size: 20px;
+            position: absolute;
+            animation: float 3s linear infinite;
+        }
+        @keyframes fade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>КрутоРоллы</h1>
+        <h2>Михайловск</h2>
+    </header>
+    <main>
+        <div class="welcome">
+            <p>Спасибо Вам за заказ и за отзыв<span class="clear-icon">!</span></p>
+        </div>
+        <div class="review-form">
+            <h3>Оставить отзыв</h3>
+            <form id="reviewForm">
+                <input type="text" id="name" placeholder="Ваше имя" required>
+                <textarea id="reviewText" placeholder="Ваш отзыв (макс. 300 символов)" maxlength="300" required></textarea>
+                <div class="star-rating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <input type="file" id="reviewImage" accept="image/*">
+                <button type="submit">Отправить отзыв</button>
+            </form>
+        </div>
+        <div class="reviews">
+            <h3>Отзывы:</h3>
+            <div class="reviews-list"></div>
+        </div>
+    </main>
+
+    <!-- Модальное окно для очистки -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Введите пароль для подтверждения:</p>
+            <p><em>Это нужно чтобы отзывы писали только клиенты</em></p>
+            <input type="password" id="passwordInput" placeholder="Пароль">
+            <button id="submitPassword">Подтвердить</button>
+        </div>
+    </div>
+
+    <script>
+        // Управление звездами
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = star.dataset.value;
+                stars.forEach(s => s.classList.remove('filled'));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('filled');
+                }
+            });
+        });
+
+        // Работа с формой отзыва
+        const form = document.getElementById('reviewForm');
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const reviewText = document.getElementById('reviewText').value;
+            const reviewImage = document.getElementById('reviewImage').files[0];
+            const modal = document.getElementById('passwordModal');
+
+            // Открыть модальное окно для ввода пароля
+            modal.style.display = 'flex';
+
+            document.getElementById('submitPassword').onclick = () => {
+                const password = document.getElementById('passwordInput').value;
+                if (password === '15') {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const reviewsList = document.querySelector('.reviews-list');
+                        const reviewElement = document.createElement('div');
+                        reviewElement.classList.add('review');
+                        reviewElement.innerHTML = `
+                            <img src="${reviewImage ? reader.result : 'https://via.placeholder.com/70'}">
+                            <p><strong>${name}</strong>: ${reviewText} <br> <strong>Оценка:</strong> ${'★'.repeat(selectedRating)}</p>
+                        `;
+                        reviewsList.prepend(reviewElement);
+                        saveReviews();
+                        modal.style.display = 'none';
+
+                        // Анимация поцелуя и сердечек
+                        const kiss = document.createElement('div');
+                        kiss.textContent = '💋';
+                        kiss.classList.add('kiss');
+                        kiss.style.top = '50%';
+                        kiss.style.left = '50%';
+                        document.body.appendChild(kiss);
+
+                        setTimeout(() => kiss.remove(), 2000);
+
+                        for (let i = 0; i < 10; i++) {
+                            const heart = document.createElement('div');
+                            heart.textContent = '❤️';
+                            heart.classList.add('heart');
+                            heart.style.top = '50%';
+                            heart.style.left = `${Math.random() * 100}%`;
+                            heart.style.animationDelay = `${Math.random() * 2}s`;
+                            document.body.appendChild(heart);
+                            setTimeout(() => heart.remove(), 3000);
+                        }
+                    };
+
+                    if (reviewImage) {
+                        reader.readAsDataURL(reviewImage);
+                    } else {
+                        reader.onload();
+                    }
+
+                    form.reset();
+                    selectedRating = 0;
+                    stars.forEach(s => s.classList.remove('filled'));
+                } else {
+                    alert('Неверный пароль!');
+                }
+            };
+        });
+
+        // Закрытие модального окна
+        document.querySelector('.close').onclick = () => {
+            document.getElementById('passwordModal').style.display = 'none';
+        };
+
+        // Сохранение и загрузка отзывов
+        function saveReviews() {
+            const reviews = document.querySelector('.reviews-list').innerHTML;
+            localStorage.setItem('reviews', reviews);
+        }
+
+        function loadReviews() {
+            const savedReviews = localStorage.getItem('reviews');
+            if (savedReviews) {
+                document.querySelector('.reviews-list').innerHTML = savedReviews;
+            }
+        }
+
+        loadReviews();
+
+        // Анимация снега
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.textContent = '❄';
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(snowflake);
+
+            snowflake.addEventListener('animationend', () => snowflake.remove());
+        }
+
+        setInterval(createSnowflake, 300);
+    </script>
+</body>
+</html>
